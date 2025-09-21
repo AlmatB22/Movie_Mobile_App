@@ -10,7 +10,7 @@
         search?: boolean; 
         searchText?: string; 
         searchQuery: string;
-        setSearchQuery: React.Dispatch<React.SetStateAction<string>>
+        setSearchQuery?: React.Dispatch<React.SetStateAction<string>>
     }
 
     export default function PageHeader({ search=false, searchText='SEARCH TERM', searchQuery, setSearchQuery } : Props ) {

@@ -12,8 +12,17 @@ import PageHeader from '@/components/PageHeader';
 import useFetch from '@/services/useFetch';
 import { fetchMovies } from '@/services/api';
 
+import { getTrendingMovies } from '@/services/appwrite';
+import TrendingCard from '@/components/TrendingCard';
+
 function Home() {
   const router = useRouter();
+
+  const {
+    data: trendingMovies,
+    loading: trendingLoading,
+    error: trendingError
+  } = useFetch(getTrendingMovies);
 
   const {
     data: movies,
@@ -26,52 +35,62 @@ function Home() {
   );
 
   return (
-    <View className="flex-1 bg-primary">
-      <Image source={images.bg} className="w-full absolute" />
+  <View className="flex-1 bg-primary">
+    <Image source={images.bg} className="w-full absolute" />
 
-      {/* Loading state */}
-      {moviesLoading && (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#fff" />
+    <FlatList
+      data={movies}
+      className="flex-1 px-5"
+      showsVerticalScrollIndicator={false}
+      renderItem={({ item }) => <MovieCard {...item} />}
+      keyExtractor={(item) => item.id.toString()}
+      numColumns={3}
+      columnWrapperStyle={{
+        justifyContent: 'flex-start',
+        gap: 20,
+        paddingRight: 5,
+        marginBottom: 10,
+      }}
+      contentContainerStyle={{
+        paddingBottom: 100,
+      }}
+      ListHeaderComponent={
+        <View>
+          <PageHeader searchQuery={''} />
+          {trendingMovies && (
+            <View className="mt-5">
+              <Text className="text-white text-lg mb-3 font-bold">Trending Movies</Text>
+              <FlatList 
+                data={trendingMovies} 
+                renderItem={({ item, index }) => (
+                  <TrendingCard movie={item} index={index}/>
+                )}
+                keyExtractor={(item) => item.movie_id!}
+                ItemSeparatorComponent={() => (
+                  <View className='w-6'></View>
+                )}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            </View>
+          )}
+          <Text className="text-lg text-white mt-3 mb-3 font-bold">Latest Movies</Text>
         </View>
-      )}
-
-      {/* Error state */}
-      {moviesError && !moviesLoading && (
-        <View className="flex-1 justify-center items-center px-4">
-          <Text className="text-red-500 text-lg text-center">
-            Failed to load movies. Please try again later.
+      }
+      ListEmptyComponent={
+        moviesLoading ? (
+          <View className="mt-10 items-center">
+            <ActivityIndicator size="large" color="#fff" />
+          </View>
+        ) : moviesError ? (
+          <Text className="text-red-500 text-center mt-10">
+            Failed to load movies
           </Text>
-        </View>
-      )}
+        ) : null
+      }
+    />
+  </View>
 
-      {/* Movies list */}
-      {!moviesLoading && !moviesError && (
-        <FlatList
-          data={movies}
-          className="flex-1 px-5"
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <MovieCard {...item} />}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={3}
-          columnWrapperStyle={{
-            justifyContent: 'flex-start',
-            gap: 20,
-            paddingRight: 5,
-            marginBottom: 10,
-          }}
-          contentContainerStyle={{
-            paddingBottom: 100,
-          }}
-          ListHeaderComponent={
-            <>
-              <PageHeader searchQuery = {''}/>
-              <Text className="text-lg text-white mt-3 mb-3">Latest Movies</Text>
-            </>
-        }
-        />
-      )}
-    </View>
   );
 }
 

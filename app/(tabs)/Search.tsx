@@ -10,6 +10,7 @@ import { images } from '@/constants/images';
 
 import useFetch from '@/services/useFetch';
 import { fetchMovies } from '@/services/api';
+import { updateSearchCount } from '@/services/appwrite';
 
 function Search() {
 
@@ -24,7 +25,7 @@ function Search() {
     useEffect( () => {
         const timeoutId = setTimeout( async () => {
             if (searchQuery.trim()) {
-                await loadMovies();
+                await loadMovies();      
             }
             else {
                 reset();
@@ -33,6 +34,14 @@ function Search() {
 
         return () => clearTimeout(timeoutId);
     }, [searchQuery])
+
+    useEffect(() => {
+        if (movies && movies?.length > 0) {
+            console.log('kek')
+            updateSearchCount(searchQuery, movies[0]);
+        }
+    }, [movies]);
+
     return (
         <View className='flex-1 bg-primary'>
             <Image source={images.bg} className='w-full absolute'/>

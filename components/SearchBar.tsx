@@ -7,10 +7,10 @@ interface Props {
     placeholder: string,
     onPress?: () => void;
     value: string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
+    setValue?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function SearchBar({ placeholder, onPress, value, setValue} : Props) {
+function SearchBar({ placeholder, onPress, value, setValue = () => {}} : Props) {
     return (
         <View className='flex-row items-center bg-dark-200 px-5 py-4 rounded-full'>
             <Image source={icons.search} className='size-7' resizeMode='contain' />

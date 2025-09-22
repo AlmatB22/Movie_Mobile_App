@@ -2,8 +2,9 @@ import React, {useEffect} from 'react';
 import { fetchMovieDetails } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { icons } from '@/constants/icons';
+import { useRouter } from 'expo-router';
 
 interface MovieInfoProps {
     label: string,
@@ -25,6 +26,8 @@ const MovieInfo = ({label, value} : MovieInfoProps) => {
 function MovieDetails() { 
     const { id } = useLocalSearchParams();
 
+    const router = useRouter();
+
     const { data: movie, loading } = useFetch(() => fetchMovieDetails(id as string))
 
     useEffect(() => {
@@ -33,7 +36,7 @@ function MovieDetails() {
 
     return (
         <View className='bg-primary flex-1'>
-            <ScrollView contentContainerStyle={{paddingBottom: 80}}>
+            <ScrollView contentContainerStyle={{paddingBottom: 100}}>
                 <View>
                     <Image source={{uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}`}} className='w-full h-[550px]' resizeMode='stretch'/>
                 </View>
@@ -61,6 +64,13 @@ function MovieDetails() {
                 </View>
                 
             </ScrollView>
+            <TouchableOpacity 
+                className='bg-accent absolute bottom-10 left-0 right-0 mx-5 py-3.5 items-center justify-center flex-row rounded-xl'
+                onPress={() => router.back()}
+            >
+                <Image source={icons.arrow} className='rotate-180 mr-1 size-5' tintColor='#fff' />
+                <Text className='text-white font-semibold text-base'>Go Back</Text>
+            </TouchableOpacity>
         </View>
     )
 }

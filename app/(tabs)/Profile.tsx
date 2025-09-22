@@ -1,14 +1,18 @@
 import React from 'react-native';
-import {Text, View} from 'react-native';
+import {Text, View, Image} from 'react-native';
 import { SafeAreaView } from 'react-native';
+
+import { icons } from '@/constants/icons';
 
 function Profile() {
     return (
-                <SafeAreaView>
-                    <Text className='text-2xl text-blue-500'>
-                        Profile
-                    </Text>
-                </SafeAreaView>
+                <View className='bg-primary flex-1'>
+                    <View className='flex-col items-center justify-center flex-1 gap-5'>
+                        <Image source={icons.person} className='size-14' tintColor='#FFF' />
+                        <Text className='text-gray-500 text-base '>Profile</Text>
+                    </View>
+                    
+                </View>
     )
 }
 
